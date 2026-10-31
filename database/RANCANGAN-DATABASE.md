@@ -6,6 +6,8 @@ Diagram di FigJam: https://www.figma.com/board/elVNs7DODomUgnizLkYwAx (isinya ER
 
 Hasil akhirnya **9 tabel, nol relasi**. Tiap tabel berdiri sendiri, jadi setiap halaman cukup memanggil `SELECT ... FROM satu_tabel` tanpa JOIN.
 
+**Tambahan:** tabel ke-10, `admin`, dibuat untuk login admin panel. Tabel ini juga berdiri sendiri. Penjelasan admin panel ada di [`admin/PANDUAN-ADMIN.md`](../admin/PANDUAN-ADMIN.md).
+
 ---
 
 ## Yang dianalisis

@@ -1,0 +1,79 @@
+/* Tampilan admin sengaja polos: fokusnya fungsi, bukan desain. */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  color: #222;
+}
+
+a { color: #c62828; }
+
+.admin-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  background: #111;
+}
+
+.admin-logo { color: #fff; font-weight: bold; text-decoration: none; }
+
+.admin-menu { display: flex; flex-wrap: wrap; gap: 16px; }
+.admin-menu a { color: #ddd; text-decoration: none; }
+.admin-menu a:hover { color: #fff; }
+
+.admin-isi { max-width: 1000px; margin: 0 auto; padding: 24px 16px; }
+
+.tombol {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 4px;
+  background: #c62828;
+  color: #fff;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.tombol:hover { background: #a01f1f; }
+.tombol-abu { background: #666; }
+.tombol-abu:hover { background: #444; }
+
+.pesan { padding: 10px 14px; border-radius: 4px; background: #e6f4ea; border: 1px solid #9ccc9c; }
+.pesan-error { background: #fdecea; border-color: #e0a0a0; }
+
+/* Tabel daftar data */
+.tabel-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; background: #fff; }
+th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; vertical-align: top; }
+th { background: #eee; }
+td img { width: 80px; height: 56px; object-fit: cover; }
+.aksi { white-space: nowrap; }
+
+/* Form tambah/edit */
+.form-admin { max-width: 600px; padding: 20px; background: #fff; border-radius: 6px; }
+.form-admin label { display: block; margin: 14px 0 4px; font-weight: bold; }
+.form-admin input[type=text],
+.form-admin input[type=date],
+.form-admin select,
+.form-admin textarea { width: 100%; padding: 8px; border: 1px solid #bbb; border-radius: 4px; font: inherit; }
+.form-admin .centang { font-weight: normal; }
+.form-admin .bantuan { margin: 4px 0 0; color: #666; font-size: 13px; }
+.form-admin .tombol-baris { margin-top: 20px; display: flex; gap: 8px; }
+
+/* Dashboard */
+.kartu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin: 20px 0; }
+.kartu { display: flex; flex-direction: column; padding: 16px; background: #fff; border-left: 4px solid #c62828; }
+.kartu-angka { font-size: 28px; font-weight: bold; }
+
+/* Login */
+.halaman-login { display: flex; min-height: 100vh; align-items: center; justify-content: center; padding: 16px; }
+.kotak-login { width: 100%; max-width: 360px; padding: 24px; background: #fff; border-radius: 6px; }
+.kotak-login label { display: block; margin: 14px 0 4px; }
+.kotak-login input { width: 100%; padding: 8px; border: 1px solid #bbb; border-radius: 4px; }
+.kotak-login .tombol { width: 100%; margin-top: 20px; }

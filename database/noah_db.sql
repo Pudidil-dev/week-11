@@ -2,7 +2,7 @@
 -- Database website NOAH (migrasi HTML statis ke PHP + MySQL)
 -- Bisa langsung di-import lewat phpMyAdmin: tab "Import" > pilih file ini.
 --
--- Ada 9 tabel. Semuanya BERDIRI SENDIRI:
+-- Ada 10 tabel (9 konten/form + 1 admin). Semuanya BERDIRI SENDIRI:
 --   tidak ada foreign key, tidak perlu JOIN.
 --   Setiap halaman cukup memakai SELECT ke satu tabel.
 -- =====================================================================
@@ -158,6 +158,18 @@ CREATE TABLE pelanggan_email (
   waktu_daftar DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ---------------------------------------------------------------------
+-- 10. admin
+--     Dipakai: admin/login.php
+--     Kolom password berisi HASH dari password_hash(), bukan password asli.
+--     Kalau database bocor, password asli tetap tidak terbaca.
+-- ---------------------------------------------------------------------
+CREATE TABLE admin (
+  id        INT AUTO_INCREMENT PRIMARY KEY,
+  username  VARCHAR(50)  NOT NULL UNIQUE,
+  password  VARCHAR(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 -- =====================================================================
 -- DATA AWAL (diambil langsung dari isi HTML yang sekarang)
@@ -236,3 +248,12 @@ INSERT INTO kiriman_sahabat (nama_lengkap, email, kategori, pesan, kota, gambar,
 ('Andhika Prasetya', 'contoh1@example.com', 'Cerita Penggemar', 'NOAH mengubah hidup saya. Lirik-liriknya selalu menemani saat saya berada di titik terendah.', 'Jakarta', 'images/fan-1.jpg', 'tampil'),
 ('Siti Rahma',       'contoh2@example.com', 'Cerita Penggemar', 'Menemukan keluarga baru di komunitas ini. Sahabat NOAH Bandung sangat suportif dan kreatif.', 'Bandung', 'images/fan-2.jpg', 'tampil'),
 ('Reza Kurniawan',   'contoh3@example.com', 'Cerita Penggemar', 'Koleksi produk resmi saya sudah mencapai 100 item. Semua berawal dari kecintaan pada melodi Ariel.', 'Surabaya', 'images/fan-3.jpg', 'tampil');
+
+-- Akun admin awal untuk latihan.
+--   username : admin
+--   password : noah-30a23f
+-- Ganti password setelah login pertama dengan membuat hash baru:
+--   php -r "echo password_hash('password_baru', PASSWORD_DEFAULT);"
+-- lalu tempel hasilnya ke kolom password lewat phpMyAdmin.
+INSERT INTO admin (username, password) VALUES
+('admin', '$2y$10$AUK9C0E7t9jkt1Rda/2OJ.11XkNSsl2oNz/vFnu/jhyCC5p/9uwCW');
