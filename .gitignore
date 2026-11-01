@@ -1,3 +1,18 @@
-# tidak ada build tool — abaikan file OS
+# File OS dan editor
 Thumbs.db
 .DS_Store
+.vscode/
+.idea/
+
+# Semua dokumen markdown (catatan tugas, laporan, panduan)
+*.md
+
+# Mockup desain dari Google Stitch dan catatan rencana
+stitch_*/
+docs/
+
+# Dokumen database selain file SQL
+database/*.xlsx
+
+# Halaman uji
+tes.html
