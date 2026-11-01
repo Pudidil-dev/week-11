@@ -1,9 +1,13 @@
 <?php
 // =====================================================
 // HALAMAN CERITA BAND
-// Halaman ini TIDAK memakai database: isinya sejarah band
-// yang jarang berubah, jadi cukup ditulis langsung.
+// Data dari database: anggota (Kenali Anggota)
+// Bagian lain (sejarah, penghargaan) jarang berubah, jadi cukup ditulis langsung.
 // =====================================================
+
+include 'koneksi.php';
+
+$hasil_anggota = mysqli_query($koneksi, "SELECT * FROM anggota ORDER BY id ASC");
 
 $judul_halaman = 'Cerita Band - NOAH';
 $kelas_body    = 'page-cerita';
@@ -76,34 +80,23 @@ include 'bagian/header.php';
     </div>
   </section>
 
-  <!-- ===== KENALI ANGGOTA ===== -->
+  <!-- ===== KENALI ANGGOTA (dari tabel anggota) ===== -->
   <section class="section">
     <div class="container">
       <h2 class="section-title mb">Kenali Anggota</h2>
       <p class="label-merah">Anggota Aktif</p>
 
       <div class="grid-3">
-        <!-- Ariel -->
-        <div class="card card-border-merah tengah">
-          <div class="avatar"><img src="images/member-ariel.jpg" alt="Ariel"></div>
-          <h4 class="kota">Ariel</h4>
-          <p class="lagu-artis">Vokal / Frontman</p>
-          <p class="paragraf-kecil">Sang visioner dan penulis lirik utama yang suaranya telah menjadi lagu tema bagi jutaan orang.</p>
-        </div>
-        <!-- Lukman -->
-        <div class="card card-border-merah tengah">
-          <div class="avatar"><img src="images/member-lukman.jpg" alt="Lukman"></div>
-          <h4 class="kota">Lukman</h4>
-          <p class="lagu-artis">Gitar</p>
-          <p class="paragraf-kecil">Arsitek melodi gitar yang memberikan nuansa atmosferik khas pada setiap lagu NOAH.</p>
-        </div>
-        <!-- David -->
-        <div class="card card-border-merah tengah">
-          <div class="avatar"><img src="images/member-david.jpg" alt="David"></div>
-          <h4 class="kota">David</h4>
-          <p class="lagu-artis">Keyboard</p>
-          <p class="paragraf-kecil">Master harmonisasi yang membawa sentuhan modern lewat permainan keyboard yang elegan.</p>
-        </div>
+        <?php while ($anggota = mysqli_fetch_assoc($hasil_anggota)) { ?>
+          <div class="card card-border-merah tengah">
+            <?php if ($anggota['foto'] != '') { ?>
+              <div class="avatar"><img src="<?php echo htmlspecialchars($anggota['foto']); ?>" alt="<?php echo htmlspecialchars($anggota['nama']); ?>"></div>
+            <?php } ?>
+            <h4 class="kota"><?php echo htmlspecialchars($anggota['nama']); ?></h4>
+            <p class="lagu-artis"><?php echo htmlspecialchars($anggota['posisi']); ?></p>
+            <p class="paragraf-kecil"><?php echo htmlspecialchars($anggota['deskripsi']); ?></p>
+          </div>
+        <?php } ?>
       </div>
     </div>
   </section>

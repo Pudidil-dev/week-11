@@ -26,14 +26,15 @@
   <p class="bantuan">Boleh kosong untuk arsip yang hanya diketahui tahunnya.</p>
 
   <label for="kota">Kota</label>
-  <input id="kota" type="text" name="kota" maxlength="100" value="<?= e($data['kota'] ?? '') ?>">
+  <input id="kota" type="text" name="kota" maxlength="255" value="<?= e($data['kota'] ?? '') ?>">
+  <p class="bantuan">Untuk Arsip Event, isi daftar kota yang dikunjungi, dipisah koma.</p>
 
   <label for="venue">Venue</label>
   <input id="venue" type="text" name="venue" maxlength="150" value="<?= e($data['venue'] ?? '') ?>">
 
   <label for="deskripsi">Deskripsi</label>
   <textarea id="deskripsi" name="deskripsi" rows="3"><?= e($data['deskripsi'] ?? '') ?></textarea>
-  <p class="bantuan">Untuk Arsip Event, isi dengan daftar kota yang dikunjungi.</p>
+  <p class="bantuan">Boleh kosong untuk Arsip Event.</p>
 
   <label for="label">Label (badge kecil di card)</label>
   <input id="label" type="text" name="label" maxlength="50" value="<?= e($data['label'] ?? '') ?>">

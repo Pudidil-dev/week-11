@@ -84,7 +84,11 @@ include 'bagian/header.php';
       $waktu = strtotime($utama['tanggal_terbit']);
       $tanggal_utama = date('d', $waktu) . ' ' . $bulan_lengkap[date('n', $waktu)] . ' ' . date('Y', $waktu);
     ?>
-    <section id="artikel-utama" class="berita-hero">
+    <!-- Gambar latar diambil dari kolom gambar; kalau kosong, pakai gambar bawaan di style.css -->
+    <section id="artikel-utama" class="berita-hero"
+      <?php if ($utama['gambar'] != '') { ?>
+        style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.85)), url('<?php echo htmlspecialchars($utama['gambar']); ?>');"
+      <?php } ?>>
       <div class="container">
         <span class="pill-merah"><?php echo htmlspecialchars($utama['kategori']); ?></span>
         <h1 class="hero-judul"><?php echo htmlspecialchars($utama['judul']); ?></h1>

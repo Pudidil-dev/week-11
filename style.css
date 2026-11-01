@@ -1650,6 +1650,12 @@ img {
   background-color: #271717;
 }
 
+/* produk baru sekaligus terbatas: badge kedua pindah ke kanan */
+.badge-baru + .badge-limited {
+  left: auto;
+  right: 10px;
+}
+
 .harga {
   color: #b7102a;
   font-weight: bold;

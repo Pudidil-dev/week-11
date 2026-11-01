@@ -45,8 +45,8 @@ function baca_input_event(): array
             $error[] = 'Tanggal tidak valid.';
         }
     }
-    if (mb_strlen($data['kota']) > 100 || mb_strlen($data['venue']) > 150 || mb_strlen($data['label']) > 50) {
-        $error[] = 'Kota maksimal 100 huruf, venue 150, label 50.';
+    if (mb_strlen($data['kota']) > 255 || mb_strlen($data['venue']) > 150 || mb_strlen($data['label']) > 50) {
+        $error[] = 'Kota maksimal 255 huruf, venue 150, label 50.';
     }
 
     return [$data, $error];

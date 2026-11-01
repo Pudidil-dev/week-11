@@ -4,14 +4,22 @@
 // Data dari database: produk
 // Filter lewat alamat, contoh:
 //   toko.php?kategori=Kaos&harga_max=300000&urut=termurah
+//   toko.php?baru=1  -> hanya produk baru
+// Produk dianggap "Baru" kalau umurnya belum lewat $hari_produk_baru hari
+// sejak tanggal_ditambahkan. Labelnya hilang sendiri, admin tidak perlu mematikan.
 // =====================================================
 
 include 'koneksi.php';
+
+$hari_produk_baru = 14;   // batas umur produk baru (2 minggu)
+// Potongan SQL yang bernilai 1 kalau produk masih baru, 0 kalau sudah lama
+$sql_baru = "(tanggal_ditambahkan >= NOW() - INTERVAL $hari_produk_baru DAY)";
 
 // ---------- 1. BACA PILIHAN FILTER ----------
 $kategori  = '';
 $harga_max = 2000000;     // nilai awal slider: harga paling tinggi
 $urut      = 'terbaru';
+$hanya_baru = false;
 
 if (isset($_GET['kategori'])) {
     $kategori = $_GET['kategori'];
@@ -22,6 +30,9 @@ if (isset($_GET['harga_max'])) {
 if (isset($_GET['urut'])) {
     $urut = $_GET['urut'];
 }
+if (isset($_GET['baru']) && $_GET['baru'] == '1') {
+    $hanya_baru = true;
+}
 
 // ---------- 2. SUSUN QUERY PRODUK ----------
 $syarat = "harga <= $harga_max";
@@ -30,6 +41,9 @@ if ($kategori != '') {
     $kategori_aman = mysqli_real_escape_string($koneksi, $kategori);
     $syarat = $syarat . " AND kategori = '$kategori_aman'";
 }
+if ($hanya_baru) {
+    $syarat = $syarat . " AND $sql_baru";
+}
 
 // Urutan hanya boleh salah satu dari pilihan di bawah
 if ($urut == 'termurah') {
@@ -37,10 +51,11 @@ if ($urut == 'termurah') {
 } elseif ($urut == 'termahal') {
     $urutan = "harga DESC";
 } else {
-    $urutan = "id DESC";    // terbaru = id paling besar
+    $urutan = "tanggal_ditambahkan DESC";    // terbaru = paling akhir ditambahkan
 }
 
-$hasil_produk = mysqli_query($koneksi, "SELECT * FROM produk WHERE $syarat ORDER BY $urutan");
+// Kolom tambahan produk_baru (1/0) dihitung langsung oleh MySQL
+$hasil_produk = mysqli_query($koneksi, "SELECT *, $sql_baru AS produk_baru FROM produk WHERE $syarat ORDER BY $urutan");
 
 // ---------- 3. SIDEBAR: JUMLAH PRODUK PER KATEGORI ----------
 $hasil_kategori = mysqli_query($koneksi, "SELECT kategori, COUNT(*) AS jumlah FROM produk GROUP BY kategori ORDER BY kategori");
@@ -49,8 +64,11 @@ $hasil_total  = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM produk");
 $baris_total  = mysqli_fetch_assoc($hasil_total);
 $total_produk = $baris_total['total'];
 
+$hasil_jumlah_baru = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM produk WHERE $sql_baru");
+$jumlah_baru       = mysqli_fetch_assoc($hasil_jumlah_baru)['total'];
+
 // ---------- 4. EDISI TERBATAS ----------
-$hasil_terbatas = mysqli_query($koneksi, "SELECT * FROM produk WHERE label = 'Terbatas' ORDER BY id DESC");
+$hasil_terbatas = mysqli_query($koneksi, "SELECT * FROM produk WHERE edisi_terbatas = 1 ORDER BY tanggal_ditambahkan DESC");
 
 $judul_halaman = 'Toko - NOAH';
 $kelas_body    = 'page-toko';
@@ -87,7 +105,7 @@ include 'bagian/header.php';
       <aside class="sidebar">
         <h3 class="berita-judul">Kategori</h3>
         <ul class="kategori-list">
-          <li class="<?php if ($kategori == '') { echo 'aktif'; } ?>">
+          <li class="<?php if ($kategori == '' && !$hanya_baru) { echo 'aktif'; } ?>">
             <a href="toko.php#produk">Semua <span><?php echo $total_produk; ?></span></a>
           </li>
           <?php while ($kat = mysqli_fetch_assoc($hasil_kategori)) { ?>
@@ -97,11 +115,17 @@ include 'bagian/header.php';
               </a>
             </li>
           <?php } ?>
+          <li class="<?php if ($hanya_baru) { echo 'aktif'; } ?>">
+            <a href="toko.php?baru=1#produk">Produk Baru <span><?php echo $jumlah_baru; ?></span></a>
+          </li>
         </ul>
 
         <!-- Harga dan urutan dikirim lewat form GET. Tombol Terapkan diperlukan karena tidak ada JavaScript. -->
         <form class="form-filter" action="toko.php#produk" method="get">
           <input type="hidden" name="kategori" value="<?php echo htmlspecialchars($kategori); ?>">
+          <?php if ($hanya_baru) { ?>
+            <input type="hidden" name="baru" value="1">
+          <?php } ?>
 
           <h3 class="berita-judul">Harga Maksimal</h3>
           <input type="range" name="harga_max" min="0" max="2000000" step="50000" value="<?php echo $harga_max; ?>" class="range">
@@ -130,11 +154,11 @@ include 'bagian/header.php';
         <?php while ($produk = mysqli_fetch_assoc($hasil_produk)) { ?>
           <div class="card card-border-merah produk">
             <div class="produk-gambar">
-              <!-- Badge sesuai label produk -->
-              <?php if ($produk['label'] == 'Baru') { ?>
+              <!-- Badge: Terbatas dari kolom edisi_terbatas, Baru dihitung dari tanggal_ditambahkan -->
+              <?php if ($produk['produk_baru'] == 1) { ?>
                 <span class="badge-baru">Baru</span>
               <?php } ?>
-              <?php if ($produk['label'] == 'Terbatas') { ?>
+              <?php if ($produk['edisi_terbatas'] == 1) { ?>
                 <span class="badge-limited">Terbatas</span>
               <?php } ?>
               <img src="<?php echo htmlspecialchars($produk['gambar']); ?>" alt="<?php echo htmlspecialchars($produk['nama_produk']); ?>">
@@ -151,7 +175,7 @@ include 'bagian/header.php';
     </div>
   </section>
 
-  <!-- ===== EDISI TERBATAS (produk dengan label Terbatas) ===== -->
+  <!-- ===== EDISI TERBATAS (produk dengan edisi_terbatas = 1) ===== -->
   <section class="section bg-abu">
     <div class="container">
       <p class="label-merah">Pilihan Kolektor</p>
