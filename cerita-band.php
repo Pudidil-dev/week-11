@@ -1,61 +1,20 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cerita Band - NOAH</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body class="page-cerita">
+<?php
+// =====================================================
+// HALAMAN CERITA BAND
+// Halaman ini TIDAK memakai database: isinya sejarah band
+// yang jarang berubah, jadi cukup ditulis langsung.
+// =====================================================
 
-  <!-- ===== NAVBAR (sama di semua halaman) ===== -->
-  <header class="navbar">
-    <div class="container navbar-isi">
-      <a href="index.html" class="logo">NOAH</a>
-      <nav class="menu">
-        <a href="cerita-band.html" class="aktif">Cerita Band</a>
-        <a href="diskografi.html">Diskografi</a>
-        <a href="tur-event.html">Event</a>
-        <a href="berita-media.html">Media</a>
-        <a href="sahabat-noah.html">Sahabat NOAH</a>
-        <a href="toko.html">Toko</a>
-      </nav>
-      <details class="mobile-menu">
-        <summary>Menu</summary>
-        <div class="mobile-menu-panel">
-          <a href="cerita-band.html">Cerita Band</a>
-          <a href="diskografi.html">Diskografi</a>
-          <a href="tur-event.html">Event</a>
-          <a href="berita-media.html">Media</a>
-          <a href="sahabat-noah.html">Sahabat NOAH</a>
-          <a href="toko.html">Toko</a>
-        </div>
-      </details>
-      <div class="navbar-kanan">
-        <details class="search-box">
-          <summary class="search-icon" aria-label="Buka pencarian"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></summary>
-          <form class="search-panel" action="berita-media.html" method="get">
-            <label for="search-cerita">Cari konten NOAH</label>
-            <div class="search-input-baris">
-              <input id="search-cerita" type="search" name="q" placeholder="Album, event, berita...">
-              <button type="submit" class="btn btn-merah">Cari</button>
-            </div>
-            <div class="search-saran">
-              <a href="diskografi.html">Diskografi</a>
-              <a href="tur-event.html">Event</a>
-              <a href="berita-media.html">Media</a>
-            </div>
-          </form>
-        </details>
-        <span class="lang">ID</span>
-      </div>
-    </div>
-  </header>
+$judul_halaman = 'Cerita Band - NOAH';
+$kelas_body    = 'page-cerita';
+$menu_aktif    = 'cerita';
+include 'bagian/header.php';
+?>
 
   <!-- ===== PAGE HEADER (judul halaman + breadcrumb) ===== -->
   <header class="page-header">
     <div class="container">
-      <p class="breadcrumb"><a href="index.html">Beranda</a> &gt; <span>Cerita Band</span></p>
+      <p class="breadcrumb"><a href="index.php">Beranda</a> &gt; <span>Cerita Band</span></p>
       <h1 class="page-judul">Cerita Band</h1>
       <p class="page-sub">Dari Peterpan ke NOAH: Perjalanan Band Rock Terlaris Indonesia yang mendefinisikan ulang musik pop-rock tanah air.</p>
     </div>
@@ -191,51 +150,4 @@
     </div>
   </section>
 
-  <!-- ===== FOOTER ===== -->
-  <footer class="footer">
-  <div class="container grid-4">
-    <div>
-      <div class="logo-footer">NOAH</div>
-      <p class="teks-abu">Representasi musik pop-rock terbaik Indonesia. Menjangkau hati lewat melodi dan lirik yang melampaui waktu.</p>
-    </div>
-    <div>
-      <h4 class="footer-judul">Navigasi</h4>
-      <ul>
-        <li class="nav-cerita"><a href="cerita-band.html">Cerita Band</a></li>
-        <li class="nav-diskografi"><a href="diskografi.html">Diskografi</a></li>
-        <li class="nav-event"><a href="tur-event.html">Event</a></li>
-        <li class="nav-media"><a href="berita-media.html">Media</a></li>
-        <li class="nav-sahabat"><a href="sahabat-noah.html">Sahabat NOAH</a></li>
-        <li class="nav-toko"><a href="toko.html">Toko</a></li>
-      </ul>
-    </div>
-    <div>
-      <h4 class="footer-judul">Musik</h4>
-      <ul>
-        <li><a href="https://open.spotify.com/album/4EneY8crCrt61L7siIXtkS?si=UTO1NEtATPqdLRThsBjRjQ" target="_blank" rel="noopener">Spotify</a></li>
-        <li><a href="https://music.apple.com/id/artist/noah/766158889?l=id" target="_blank" rel="noopener">Apple Music</a></li>
-        <li><a href="https://music.youtube.com/channel/UCbtHlc5rJCvSb_k0VyUowLA" target="_blank" rel="noopener">YouTube Music</a></li>
-        <li><a href="diskografi.html">Diskografi</a></li>
-      </ul>
-    </div>
-    <div>
-      <h4 class="footer-judul">Legal</h4>
-      <ul>
-        <li><a href="index.html#kebijakan-privasi">Kebijakan Privasi</a></li>
-        <li><a href="index.html#ketentuan-layanan">Ketentuan Layanan</a></li>
-        <li><a href="tur-event.html#pemesanan-event">Kontak</a></li>
-        <li><a href="berita-media.html#materi-pers">Materi Pers</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="container footer-bawah">
-    <p>&copy; 2024 NOAH. Hak Cipta Dilindungi.</p>
-    <div class="footer-ikon">
-      <span aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
-      <span aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></span>
-    </div>
-  </div>
-</footer>
-
-</body>
-</html>
+<?php include 'bagian/footer.php'; ?>
