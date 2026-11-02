@@ -153,10 +153,11 @@ CREATE TABLE admin (
 -- \n = pindah baris, '' = tanda kutip di dalam teks
 -- =====================================================================
 
+-- Konser = contoh jadwal (website fan). Web hanya menampilkan konser yang tanggalnya belum lewat.
 INSERT INTO event (jenis, judul, tanggal, kota, venue, deskripsi, label) VALUES
-('konser',    'Jakarta',  '2026-08-24', 'Jakarta',  'JIExpo Kemayoran',           'Malam karya NOAH dengan sesi arsip visual, bernyanyi bersama, dan ruang temu Sahabat.', 'Tersedia'),
-('konser',    'Bandung',  '2026-09-12', 'Bandung',  'SABUGA',                     'Temu Sahabat NOAH Bandung dengan pemutaran arsip konser dan sesi musik akustik.', 'Tersedia'),
-('konser',    'Surabaya', '2026-10-03', 'Surabaya', 'Grand City Convention Hall', 'Malam tribut NOAH bersama komunitas regional dan kurasi lagu lintas era.', 'Tersedia'),
+('konser',    'Jakarta',  '2027-08-24', 'Jakarta',  'JIExpo Kemayoran',           'Malam karya NOAH dengan sesi arsip visual, bernyanyi bersama, dan ruang temu Sahabat.', 'Tersedia'),
+('konser',    'Bandung',  '2027-09-12', 'Bandung',  'SABUGA',                     'Temu Sahabat NOAH Bandung dengan pemutaran arsip konser dan sesi musik akustik.', 'Tersedia'),
+('konser',    'Surabaya', '2027-10-03', 'Surabaya', 'Grand City Convention Hall', 'Malam tribut NOAH bersama komunitas regional dan kurasi lagu lintas era.', 'Tersedia'),
 ('arsip',     '6 Kota dalam 24 Jam (2004)', NULL,    'Medan, Padang, Pekanbaru, Lampung, Semarang, Surabaya', NULL, NULL, 'EVENT BERSEJARAH'),
 ('arsip',     '5 Negara dalam 24 Jam', '2012-11-15', 'Melbourne, Hong Kong, Kuala Lumpur, Singapore, Jakarta', NULL, NULL, NULL),
 ('arsip',     'Tur AS (2015)', NULL,                 'Los Angeles, San Francisco, Washington DC, New York', NULL, NULL, 'TUR DUNIA'),

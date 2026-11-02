@@ -77,3 +77,6 @@ td img { width: 80px; height: 56px; object-fit: cover; }
 .kotak-login label { display: block; margin: 14px 0 4px; }
 .kotak-login input { width: 100%; padding: 8px; border: 1px solid #bbb; border-radius: 4px; }
 .kotak-login .tombol { width: 100%; margin-top: 20px; }
+
+/* Tombol di kolom aksi sejajar dengan link Hapus */
+.aksi form { display: inline; margin-right: 6px; }

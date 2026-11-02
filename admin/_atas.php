@@ -17,6 +17,9 @@
       <a href="<?= url_admin('index.php') ?>">Dashboard</a>
       <a href="<?= url_admin('berita/index.php') ?>">Berita</a>
       <a href="<?= url_admin('event/index.php') ?>">Event</a>
+      <a href="<?= url_admin('kiriman/index.php') ?>">Kiriman</a>
+      <a href="<?= url_admin('pemesanan/index.php') ?>">Pemesanan</a>
+      <a href="<?= url_admin('pelanggan/index.php') ?>">Pelanggan</a>
       <a href="<?= url_admin('logout.php') ?>">Keluar (<?= e($_SESSION['admin_username'] ?? '') ?>)</a>
     </nav>
   </header>

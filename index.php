@@ -8,8 +8,9 @@
 // 1. Sambungkan ke database
 include 'koneksi.php';
 
-// 2. Ambil 3 konser, urut dari tanggal paling dekat
-$hasil_konser = mysqli_query($koneksi, "SELECT * FROM event WHERE jenis = 'konser' ORDER BY tanggal ASC LIMIT 3");
+// 2. Ambil 3 konser yang BELUM lewat, urut dari tanggal paling dekat.
+//    CURDATE() = tanggal hari ini. Konser tanpa tanggal ikut tersaring.
+$hasil_konser = mysqli_query($koneksi, "SELECT * FROM event WHERE jenis = 'konser' AND tanggal >= CURDATE() ORDER BY tanggal ASC LIMIT 3");
 
 // 3. Ambil 3 berita paling baru
 $hasil_berita = mysqli_query($koneksi, "SELECT * FROM berita ORDER BY tanggal_terbit DESC LIMIT 3");
@@ -39,7 +40,7 @@ include 'bagian/header.php';
     </div>
   </section>
 
-  <!-- ===== MUSIK RESMI (tetap statis) ===== -->
+  <!-- ===== MUSIK RESMI (sengaja statis: durasi lagu tidak disimpan di database) ===== -->
   <section id="player" class="player-wrap">
     <div class="musik-native-card card-border-merah">
       <div class="musik-native-cover">
@@ -72,6 +73,10 @@ include 'bagian/header.php';
       <a href="tur-event.php#konser-mendatang" class="link-merah">Lihat Semua Jadwal</a>
     </div>
 
+    <?php if (mysqli_num_rows($hasil_konser) == 0) { ?>
+      <p class="data-kosong">Belum ada jadwal konser mendatang.</p>
+    <?php } ?>
+
     <div class="grid-3">
       <?php while ($konser = mysqli_fetch_assoc($hasil_konser)) { ?>
         <?php
@@ -88,6 +93,7 @@ include 'bagian/header.php';
             <span class="label-tersedia"><?php echo htmlspecialchars($konser['label'] ?? ''); ?></span>
           </div>
           <div class="card-tengah">
+            <!-- Card konser memakai kolom kota. Kolom judul untuk konser diisi nama kota juga (dipakai di admin). -->
             <h3 class="kota"><?php echo htmlspecialchars($konser['kota'] ?? ''); ?></h3>
             <p class="venue"><?php echo htmlspecialchars($konser['venue'] ?? ''); ?></p>
           </div>

@@ -182,7 +182,11 @@ include 'bagian/header.php';
               <div class="le-head">
                 <span class="label-emas">TERBATAS</span>
                 <?php if ($terbatas['stok'] != '') { ?>
-                  <span class="link-merah">Sisa <?php echo $terbatas['stok']; ?> item</span>
+                  <?php if ($terbatas['stok'] > 0) { ?>
+                    <span class="link-merah">Sisa <?php echo $terbatas['stok']; ?> item</span>
+                  <?php } else { ?>
+                    <span class="link-merah">Habis</span>
+                  <?php } ?>
                 <?php } ?>
               </div>
               <h3 class="berita-judul"><?php echo htmlspecialchars($terbatas['nama_produk']); ?></h3>

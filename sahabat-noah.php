@@ -7,14 +7,19 @@
 
 include 'koneksi.php';
 
-// Cerita penggemar yang sudah disetujui (status = tampil)
-$hasil_cerita = mysqli_query($koneksi, "SELECT * FROM kiriman_sahabat WHERE kategori = 'Cerita Penggemar' AND status = 'tampil' ORDER BY waktu_kirim DESC");
+// Cerita penggemar dan cover lagu yang sudah disetujui (status = tampil)
+$hasil_cerita = mysqli_query($koneksi, "SELECT * FROM kiriman_sahabat WHERE (kategori = 'Cerita Penggemar' OR kategori = 'Cover Lagu') AND status = 'tampil' ORDER BY waktu_kirim DESC");
 
 // Karya penggemar yang sudah disetujui dan punya foto
 $hasil_karya = mysqli_query($koneksi, "SELECT * FROM kiriman_sahabat WHERE kategori = 'Karya Penggemar' AND status = 'tampil' AND foto IS NOT NULL ORDER BY waktu_kirim DESC");
 
 // Komunitas regional, urut dari anggota terbanyak
 $hasil_komunitas = mysqli_query($koneksi, "SELECT * FROM komunitas_regional ORDER BY jumlah_anggota DESC");
+
+// Statistik hero dihitung dari tabel komunitas_regional:
+// SUM = jumlahkan semua anggota, COUNT = hitung jumlah wilayah
+$hasil_statistik = mysqli_query($koneksi, "SELECT SUM(jumlah_anggota) AS total_anggota, COUNT(*) AS total_wilayah FROM komunitas_regional");
+$statistik       = mysqli_fetch_assoc($hasil_statistik);
 
 // Event komunitas
 $hasil_event = mysqli_query($koneksi, "SELECT * FROM event WHERE jenis = 'komunitas' ORDER BY tanggal ASC");
@@ -32,7 +37,7 @@ $menu_aktif    = 'sahabat';
 include 'bagian/header.php';
 ?>
 
-  <!-- ===== HERO + STATISTIK (tetap statis) ===== -->
+  <!-- ===== HERO + STATISTIK (anggota & wilayah dari tabel komunitas_regional) ===== -->
   <section class="hero-sahabat">
     <div class="container tengah">
       <h1 class="hero-judul">Gabung Sahabat NOAH</h1>
@@ -41,8 +46,10 @@ include 'bagian/header.php';
 
       <!-- Statistik komunitas -->
       <div class="stats stats-garis">
-        <div class="stat"><span class="stat-angka">50K+</span><p>Anggota</p></div>
-        <div class="stat"><span class="stat-angka">32</span><p>Wilayah</p></div>
+        <!-- number_format mengubah 28220 menjadi 28.220. (int) supaya hasil kosong terbaca 0. -->
+        <div class="stat"><span class="stat-angka"><?php echo number_format((int) $statistik['total_anggota'], 0, ',', '.'); ?></span><p>Anggota</p></div>
+        <div class="stat"><span class="stat-angka"><?php echo $statistik['total_wilayah']; ?></span><p>Wilayah</p></div>
+        <!-- Angka event per tahun tidak tersimpan di database, jadi tetap ditulis manual -->
         <div class="stat"><span class="stat-angka">100+</span><p>Event/Tahun</p></div>
       </div>
     </div>
@@ -68,6 +75,10 @@ include 'bagian/header.php';
               <p class="lagu-artis"><?php echo htmlspecialchars($cerita['kota'] ?? ''); ?></p>
             </div>
           </div>
+          <!-- Kiriman Cover Lagu diberi label supaya beda dari cerita biasa -->
+          <?php if ($cerita['kategori'] == 'Cover Lagu') { ?>
+            <span class="pill">Cover Lagu</span>
+          <?php } ?>
           <p class="kutipan">"<?php echo htmlspecialchars($cerita['pesan']); ?>"</p>
         </div>
       <?php } ?>
@@ -89,7 +100,10 @@ include 'bagian/header.php';
 
       <div class="galeri-foto">
         <?php while ($karya = mysqli_fetch_assoc($hasil_karya)) { ?>
-          <div class="galeri-item"><img src="<?php echo htmlspecialchars($karya['foto']); ?>" alt="Karya <?php echo htmlspecialchars($karya['nama_lengkap']); ?>"></div>
+          <!-- title = teks yang muncul saat kursor diarahkan ke gambar: nama pengirim + keterangan karya -->
+          <div class="galeri-item"><img src="<?php echo htmlspecialchars($karya['foto']); ?>"
+               alt="<?php echo htmlspecialchars($karya['pesan']); ?>"
+               title="<?php echo htmlspecialchars($karya['nama_lengkap'] . ': ' . $karya['pesan']); ?>"></div>
         <?php } ?>
       </div>
 
@@ -123,7 +137,15 @@ include 'bagian/header.php';
         <?php $urutan = 1; ?>
         <?php while ($event = mysqli_fetch_assoc($hasil_event)) { ?>
           <?php
-            $waktu = strtotime($event['tanggal']);
+            // Kalau tanggal kosong, kotak tanggal menampilkan "Segera" (bukan tanggal palsu 1970)
+            if ($event['tanggal'] != '') {
+                $waktu        = strtotime($event['tanggal']);
+                $teks_hari    = date('d', $waktu);
+                $teks_bulan   = $bulan_lengkap[date('n', $waktu)];
+            } else {
+                $teks_hari    = '--';
+                $teks_bulan   = 'Segera';
+            }
             // Warna kotak tanggal berselang-seling: ganjil merah, genap hitam
             if ($urutan % 2 == 1) {
                 $warna = 'bg-merah';
@@ -133,8 +155,8 @@ include 'bagian/header.php';
           ?>
           <div class="event-card">
             <div class="event-tanggal <?php echo $warna; ?>">
-              <span class="event-angka"><?php echo date('d', $waktu); ?></span>
-              <span><?php echo $bulan_lengkap[date('n', $waktu)]; ?></span>
+              <span class="event-angka"><?php echo $teks_hari; ?></span>
+              <span><?php echo $teks_bulan; ?></span>
             </div>
             <div class="event-isi">
               <span class="label-merah"><?php echo htmlspecialchars($event['label'] ?? ''); ?></span>

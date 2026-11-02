@@ -75,10 +75,13 @@ include 'bagian/header.php';
     <div class="grid-3">
       <?php while ($album = mysqli_fetch_assoc($hasil_album)) { ?>
         <?php
-          // lagu_unggulan berisi beberapa lagu dipisah Enter. explode memecahnya jadi daftar.
+          // lagu_unggulan berisi beberapa lagu dipisah Enter. explode memecahnya per baris,
+          // lalu baris yang kosong dibuang (trim juga membuang spasi dan tanda Enter sisa).
           $daftar_lagu = [];
-          if ($album['lagu_unggulan'] != '') {
-              $daftar_lagu = explode("\n", $album['lagu_unggulan']);
+          foreach (explode("\n", $album['lagu_unggulan'] ?? '') as $baris) {
+              if (trim($baris) != '') {
+                  $daftar_lagu[] = trim($baris);
+              }
           }
         ?>
         <div id="album-<?php echo $album['id']; ?>" class="card card-border-merah">

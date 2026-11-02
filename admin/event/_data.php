@@ -38,6 +38,10 @@ function baca_input_event(): array
     if ($data['judul'] === '' || mb_strlen($data['judul']) > 150) {
         $error[] = 'Judul wajib diisi, maksimal 150 huruf.';
     }
+    // Konser dan event komunitas wajib punya tanggal (ditampilkan di kotak tanggal card).
+    if (($data['jenis'] === 'konser' || $data['jenis'] === 'komunitas') && $data['tanggal'] === '') {
+        $error[] = 'Tanggal wajib diisi untuk Konser Mendatang dan Event Komunitas.';
+    }
     // Tanggal boleh kosong (arsip lama), tapi kalau diisi harus valid.
     if ($data['tanggal'] !== '') {
         $tanggal = DateTime::createFromFormat('Y-m-d', $data['tanggal']);

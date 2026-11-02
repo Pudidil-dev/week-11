@@ -8,7 +8,8 @@
 
 include 'koneksi.php';
 
-$hasil_konser  = mysqli_query($koneksi, "SELECT * FROM event WHERE jenis = 'konser' ORDER BY tanggal ASC");
+// Konser yang belum lewat saja. CURDATE() = tanggal hari ini. Konser tanpa tanggal ikut tersaring.
+$hasil_konser  = mysqli_query($koneksi, "SELECT * FROM event WHERE jenis = 'konser' AND tanggal >= CURDATE() ORDER BY tanggal ASC");
 $hasil_arsip   = mysqli_query($koneksi, "SELECT * FROM event WHERE jenis = 'arsip' ORDER BY id ASC");
 $hasil_setlist = mysqli_query($koneksi, "SELECT * FROM setlist ORDER BY id ASC");
 
@@ -55,6 +56,10 @@ include 'bagian/header.php';
   <section id="konser-mendatang" class="container section">
     <h1 class="page-judul tengah mb">Konser Mendatang</h1>
     <p class="page-sub tengah mb">Jadwal ini adalah contoh event komunitas untuk website fan NOAH, bukan pengumuman konser resmi.</p>
+
+    <?php if (mysqli_num_rows($hasil_konser) == 0) { ?>
+      <p class="data-kosong tengah">Belum ada jadwal konser mendatang.</p>
+    <?php } ?>
 
     <div class="grid-auto">
       <?php while ($konser = mysqli_fetch_assoc($hasil_konser)) { ?>
@@ -127,14 +132,19 @@ include 'bagian/header.php';
     <?php while ($setlist = mysqli_fetch_assoc($hasil_setlist)) { ?>
 
       <?php
-        // Daftar lagu disimpan satu lagu per baris. explode memecahnya jadi daftar.
-        $lagu_utama  = [];
-        $lagu_encore = [];
-        if ($setlist['lagu_utama'] != '') {
-            $lagu_utama = explode("\n", $setlist['lagu_utama']);
+        // Daftar lagu disimpan satu lagu per baris. explode memecahnya per baris,
+        // lalu baris yang kosong dibuang (trim juga membuang spasi dan tanda Enter sisa).
+        $lagu_utama = [];
+        foreach (explode("\n", $setlist['lagu_utama'] ?? '') as $baris) {
+            if (trim($baris) != '') {
+                $lagu_utama[] = trim($baris);
+            }
         }
-        if ($setlist['lagu_encore'] != '') {
-            $lagu_encore = explode("\n", $setlist['lagu_encore']);
+        $lagu_encore = [];
+        foreach (explode("\n", $setlist['lagu_encore'] ?? '') as $baris) {
+            if (trim($baris) != '') {
+                $lagu_encore[] = trim($baris);
+            }
         }
         // Nomor encore melanjutkan nomor lagu utama
         $nomor_encore = count($lagu_utama) + 1;
@@ -147,17 +157,19 @@ include 'bagian/header.php';
           <span class="setlist-chevron"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
         </summary>
 
-        <?php if (count($lagu_utama) == 0) { ?>
+        <?php if (count($lagu_utama) == 0 && count($lagu_encore) == 0) { ?>
           <p class="setlist-body data-kosong">Daftar lagu untuk pertunjukan ini belum tersedia.</p>
         <?php } else { ?>
           <div class="setlist-body grid-2">
             <div>
-              <p class="label-merah">Set Utama</p>
-              <ol class="tracklist">
-                <?php foreach ($lagu_utama as $lagu) { ?>
-                  <li><?php echo htmlspecialchars($lagu); ?></li>
-                <?php } ?>
-              </ol>
+              <?php if (count($lagu_utama) > 0) { ?>
+                <p class="label-merah">Set Utama</p>
+                <ol class="tracklist">
+                  <?php foreach ($lagu_utama as $lagu) { ?>
+                    <li><?php echo htmlspecialchars($lagu); ?></li>
+                  <?php } ?>
+                </ol>
+              <?php } ?>
             </div>
             <div>
               <?php if (count($lagu_encore) > 0) { ?>

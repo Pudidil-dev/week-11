@@ -19,11 +19,11 @@
 
   <label for="judul">Judul</label>
   <input id="judul" type="text" name="judul" maxlength="150" required value="<?= e($data['judul']) ?>">
-  <p class="bantuan">Untuk Konser Mendatang, isi dengan nama kota (contoh: Jakarta).</p>
+  <p class="bantuan">Untuk Konser Mendatang, isi dengan nama kota (contoh: Jakarta). Card konser menampilkan kolom Kota.</p>
 
   <label for="tanggal">Tanggal</label>
   <input id="tanggal" type="date" name="tanggal" value="<?= e($data['tanggal'] ?? '') ?>">
-  <p class="bantuan">Boleh kosong untuk arsip yang hanya diketahui tahunnya.</p>
+  <p class="bantuan">Wajib untuk Konser Mendatang dan Event Komunitas. Boleh kosong untuk arsip yang hanya diketahui tahunnya.</p>
 
   <label for="kota">Kota</label>
   <input id="kota" type="text" name="kota" maxlength="255" value="<?= e($data['kota'] ?? '') ?>">

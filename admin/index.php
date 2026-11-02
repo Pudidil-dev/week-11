@@ -18,6 +18,10 @@ foreach ($tabel as $nama => $label) {
     $jumlah[$label] = mysqli_fetch_assoc($hasil)['total'];
 }
 
+// Kiriman yang belum diperiksa admin
+$hasil_menunggu = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM kiriman_sahabat WHERE status = 'menunggu'");
+$jumlah_menunggu = mysqli_fetch_assoc($hasil_menunggu)['total'];
+
 $judul_halaman = 'Dashboard';
 require __DIR__ . '/_atas.php';
 ?>
@@ -34,9 +38,18 @@ require __DIR__ . '/_atas.php';
   <?php endforeach; ?>
 </div>
 
+<?php if ($jumlah_menunggu > 0) : ?>
+  <p class="pesan"><?= $jumlah_menunggu ?> kiriman sahabat menunggu diperiksa. <a href="kiriman/index.php">Periksa sekarang</a></p>
+<?php endif; ?>
+
 <p>
   <a class="tombol" href="berita/index.php">Kelola Berita</a>
   <a class="tombol" href="event/index.php">Kelola Event</a>
+  <a class="tombol" href="kiriman/index.php">Kiriman Sahabat</a>
+  <a class="tombol" href="pemesanan/index.php">Pemesanan</a>
+  <a class="tombol" href="pelanggan/index.php">Pelanggan Email</a>
 </p>
+
+<p>Tabel lain (album, single, setlist, galeri, produk, anggota, komunitas regional) diubah lewat phpMyAdmin.</p>
 
 <?php require __DIR__ . '/_bawah.php'; ?>
