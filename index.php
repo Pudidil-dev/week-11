@@ -85,11 +85,11 @@ include 'bagian/header.php';
               <p class="tanggal-besar"><?php echo $hari; ?></p>
               <p class="bulan"><?php echo $bulan_singkat[$bulan]; ?></p>
             </div>
-            <span class="label-tersedia"><?php echo htmlspecialchars($konser['label']); ?></span>
+            <span class="label-tersedia"><?php echo htmlspecialchars($konser['label'] ?? ''); ?></span>
           </div>
           <div class="card-tengah">
-            <h3 class="kota"><?php echo htmlspecialchars($konser['kota']); ?></h3>
-            <p class="venue"><?php echo htmlspecialchars($konser['venue']); ?></p>
+            <h3 class="kota"><?php echo htmlspecialchars($konser['kota'] ?? ''); ?></h3>
+            <p class="venue"><?php echo htmlspecialchars($konser['venue'] ?? ''); ?></p>
           </div>
           <a class="btn btn-merah lebar" href="tur-event.php#konser-mendatang">Info Acara</a>
         </div>

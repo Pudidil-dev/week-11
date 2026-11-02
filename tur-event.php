@@ -1,7 +1,7 @@
 <?php
 // =====================================================
 // HALAMAN EVENT
-// Data dari database: event (konser & arsip), setlist + lagu_setlist
+// Data dari database: event (konser & arsip), setlist
 // Form: "Beritahu Saya"  -> proses/simpan-email.php
 //       Pemesanan        -> proses/simpan-pemesanan.php
 // =====================================================
@@ -9,10 +9,7 @@
 include 'koneksi.php';
 
 $hasil_konser  = mysqli_query($koneksi, "SELECT * FROM event WHERE jenis = 'konser' ORDER BY tanggal ASC");
-// Arsip event + id setlist miliknya (kalau ada), supaya label "Setlist" bisa menuju setlist yang tepat
-$hasil_arsip   = mysqli_query($koneksi, "SELECT event.*,
-                                            (SELECT MIN(setlist.id) FROM setlist WHERE setlist.event_id = event.id) AS setlist_id
-                                          FROM event WHERE jenis = 'arsip' ORDER BY id ASC");
+$hasil_arsip   = mysqli_query($koneksi, "SELECT * FROM event WHERE jenis = 'arsip' ORDER BY id ASC");
 $hasil_setlist = mysqli_query($koneksi, "SELECT * FROM setlist ORDER BY id ASC");
 
 $bulan_singkat = ['', 'JAN', 'FEB', 'MAR', 'APR', 'MEI', 'JUN', 'JUL', 'AGU', 'SEP', 'OKT', 'NOV', 'DES'];
@@ -72,12 +69,12 @@ include 'bagian/header.php';
               <p class="tanggal-besar"><?php echo $hari; ?></p>
               <p class="bulan"><?php echo $bulan; ?></p>
             </div>
-            <span class="label-tersedia"><?php echo htmlspecialchars($konser['label']); ?></span>
+            <span class="label-tersedia"><?php echo htmlspecialchars($konser['label'] ?? ''); ?></span>
           </div>
           <div class="card-tengah">
-            <h3 class="kota"><?php echo htmlspecialchars($konser['kota']); ?></h3>
-            <p class="venue"><?php echo htmlspecialchars($konser['venue']); ?></p>
-            <p class="paragraf-kecil"><?php echo htmlspecialchars($konser['deskripsi']); ?></p>
+            <h3 class="kota"><?php echo htmlspecialchars($konser['kota'] ?? ''); ?></h3>
+            <p class="venue"><?php echo htmlspecialchars($konser['venue'] ?? ''); ?></p>
+            <p class="paragraf-kecil"><?php echo htmlspecialchars($konser['deskripsi'] ?? ''); ?></p>
           </div>
           <a class="btn btn-merah lebar" href="#pemesanan-event">Daftar Minat</a>
         </div>
@@ -111,11 +108,8 @@ include 'bagian/header.php';
               <?php if ($arsip['deskripsi'] != '') { ?>
                 <p class="paragraf-kecil"><?php echo htmlspecialchars($arsip['deskripsi']); ?></p>
               <?php } ?>
-              <!-- Label di bawah = link pintasan. Setlist hanya muncul kalau event ini punya setlist. -->
               <div class="tag-list">
-                <?php if ($arsip['setlist_id'] != '') { ?>
-                  <a href="#setlist-<?php echo $arsip['setlist_id']; ?>" class="pill">Setlist</a>
-                <?php } ?>
+                <a href="#arsip-setlist" class="pill">Setlist</a>
                 <a href="berita-media.php?kategori=Konser#galeri-foto" class="pill">Galeri</a>
               </div>
             </div>
@@ -125,7 +119,7 @@ include 'bagian/header.php';
     </div>
   </section>
 
-  <!-- ===== ARSIP SETLIST (dari tabel setlist + lagu_setlist) ===== -->
+  <!-- ===== ARSIP SETLIST (dari tabel setlist) ===== -->
   <section id="arsip-setlist" class="container section">
     <h2 class="section-title mb">Arsip Setlist</h2>
 
@@ -133,23 +127,21 @@ include 'bagian/header.php';
     <?php while ($setlist = mysqli_fetch_assoc($hasil_setlist)) { ?>
 
       <?php
-        // Ambil semua lagu milik setlist ini (relasi lewat setlist_id), lalu pisahkan utama dan encore
-        $setlist_id  = (int) $setlist['id'];
-        // Nomor lagu memakai kolom urutan (<li value>), jadi encore melanjutkan nomor set utama.
-        $hasil_lagu  = mysqli_query($koneksi, "SELECT * FROM lagu_setlist WHERE setlist_id = $setlist_id ORDER BY urutan ASC");
+        // Daftar lagu disimpan satu lagu per baris. explode memecahnya jadi daftar.
         $lagu_utama  = [];
         $lagu_encore = [];
-        while ($lagu = mysqli_fetch_assoc($hasil_lagu)) {
-            if ($lagu['bagian'] == 'encore') {
-                $lagu_encore[] = $lagu;
-            } else {
-                $lagu_utama[] = $lagu;
-            }
+        if ($setlist['lagu_utama'] != '') {
+            $lagu_utama = explode("\n", $setlist['lagu_utama']);
         }
+        if ($setlist['lagu_encore'] != '') {
+            $lagu_encore = explode("\n", $setlist['lagu_encore']);
+        }
+        // Nomor encore melanjutkan nomor lagu utama
+        $nomor_encore = count($lagu_utama) + 1;
       ?>
 
       <!-- Setlist pertama dibuka otomatis (atribut open) -->
-      <details id="setlist-<?php echo $setlist['id']; ?>" class="setlist" <?php if ($urutan == 1) { echo 'open'; } ?>>
+      <details class="setlist" <?php if ($urutan == 1) { echo 'open'; } ?>>
         <summary class="setlist-head">
           <span><?php echo htmlspecialchars($setlist['judul']); ?></span>
           <span class="setlist-chevron"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
@@ -163,18 +155,19 @@ include 'bagian/header.php';
               <p class="label-merah">Set Utama</p>
               <ol class="tracklist">
                 <?php foreach ($lagu_utama as $lagu) { ?>
-                  <li value="<?php echo $lagu['urutan']; ?>"><?php echo htmlspecialchars($lagu['judul_lagu']); ?></li>
+                  <li><?php echo htmlspecialchars($lagu); ?></li>
                 <?php } ?>
               </ol>
             </div>
             <div>
               <?php if (count($lagu_encore) > 0) { ?>
                 <p class="label-merah">Encore</p>
-                <ol class="tracklist">
+                <ul class="tracklist">
                   <?php foreach ($lagu_encore as $lagu) { ?>
-                    <li value="<?php echo $lagu['urutan']; ?>"><?php echo htmlspecialchars($lagu['judul_lagu']); ?></li>
+                    <li><?php echo $nomor_encore . '. ' . htmlspecialchars($lagu); ?></li>
+                    <?php $nomor_encore = $nomor_encore + 1; ?>
                   <?php } ?>
-                </ol>
+                </ul>
               <?php } ?>
               <div class="detail-show">
                 <p class="lagu-artis">Detail Pertunjukan</p>
@@ -206,7 +199,7 @@ include 'bagian/header.php';
           <p class="pesan-form">Pertanyaan kamu sudah terkirim. Tim manajemen akan menghubungi lewat email.</p>
         <?php } ?>
         <?php if ($pesan == 'pesanan_gagal') { ?>
-          <p class="pesan-form gagal">Nama organisasi, email, telepon, dan tipe acara wajib diisi.</p>
+          <p class="pesan-form gagal">Nama organisasi, email, telepon, dan tipe acara wajib diisi. Estimasi kehadiran (kalau diisi) minimal 1.</p>
         <?php } ?>
 
         <!-- Setiap input punya atribut name. Nama ini yang dibaca di proses/simpan-pemesanan.php -->

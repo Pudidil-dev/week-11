@@ -1,7 +1,7 @@
 <?php
 // =====================================================
 // HALAMAN DISKOGRAFI
-// Data dari database: album + lagu_album (grid album), single (tabel single)
+// Data dari database: album (grid album), single (tabel single)
 // Filter lewat alamat, contoh: diskografi.php?era=noah&kategori=Studio
 // =====================================================
 
@@ -26,7 +26,8 @@ if ($era == 'peterpan') {
 if ($era == 'noah') {
     $syarat = $syarat . " AND tahun_rilis >= 2012";
 }
-if ($kategori == 'Studio' || $kategori == 'Kompilasi') {
+// Kategori hanya diterima kalau sesuai pilihan, jadi aman dimasukkan ke query
+if ($kategori == 'Studio' || $kategori == 'Kompilasi' || $kategori == 'Lagu Tema') {
     $syarat = $syarat . " AND kategori = '$kategori'";
 }
 
@@ -58,13 +59,14 @@ include 'bagian/header.php';
       <div class="filter-grup">
         <span class="filter-label">Kategori:</span>
         <a href="diskografi.php?kategori=Studio"    class="filter-btn <?php if ($kategori == 'Studio') { echo 'aktif'; } ?>">Studio</a>
+        <a href="diskografi.php?kategori=Lagu%20Tema" class="filter-btn <?php if ($kategori == 'Lagu Tema') { echo 'aktif'; } ?>">Lagu Tema</a>
         <a href="diskografi.php?kategori=Kompilasi" class="filter-btn <?php if ($kategori == 'Kompilasi') { echo 'aktif'; } ?>">Kompilasi</a>
         <a href="#single"                       class="filter-btn">Single</a>
       </div>
     </div>
   </section>
 
-  <!-- ===== GRID ALBUM (dari tabel album + lagu_album) ===== -->
+  <!-- ===== GRID ALBUM (dari tabel album) ===== -->
   <section class="container section-kecil">
     <?php if (mysqli_num_rows($hasil_album) == 0) { ?>
       <p class="data-kosong">Belum ada album untuk filter ini.</p>
@@ -73,9 +75,11 @@ include 'bagian/header.php';
     <div class="grid-3">
       <?php while ($album = mysqli_fetch_assoc($hasil_album)) { ?>
         <?php
-          // Ambil lagu milik album ini dari tabel lagu_album (relasi lewat album_id)
-          $album_id   = (int) $album['id'];
-          $hasil_lagu = mysqli_query($koneksi, "SELECT * FROM lagu_album WHERE album_id = $album_id ORDER BY urutan ASC");
+          // lagu_unggulan berisi beberapa lagu dipisah Enter. explode memecahnya jadi daftar.
+          $daftar_lagu = [];
+          if ($album['lagu_unggulan'] != '') {
+              $daftar_lagu = explode("\n", $album['lagu_unggulan']);
+          }
         ?>
         <div id="album-<?php echo $album['id']; ?>" class="card card-border-merah">
           <div class="album-cover"><img src="<?php echo htmlspecialchars($album['foto_album']); ?>" alt="<?php echo htmlspecialchars($album['judul']); ?>"></div>
@@ -87,9 +91,13 @@ include 'bagian/header.php';
             <span class="pill"><?php echo htmlspecialchars($album['kategori']); ?></span>
           </div>
           <ul class="tracklist">
-            <?php while ($lagu = mysqli_fetch_assoc($hasil_lagu)) { ?>
-              <li><?php echo $lagu['urutan'] . '. ' . htmlspecialchars($lagu['judul_lagu']); ?></li>
-            <?php } ?>
+            <?php
+              $nomor = 1;
+              foreach ($daftar_lagu as $lagu) {
+                  echo '<li>' . $nomor . '. ' . htmlspecialchars($lagu) . '</li>';
+                  $nomor = $nomor + 1;
+              }
+            ?>
           </ul>
           <a class="btn btn-merah lebar" href="#album-<?php echo $album['id']; ?>">Lihat Album</a>
         </div>

@@ -10,8 +10,8 @@ include 'koneksi.php';
 // Cerita penggemar yang sudah disetujui (status = tampil)
 $hasil_cerita = mysqli_query($koneksi, "SELECT * FROM kiriman_sahabat WHERE kategori = 'Cerita Penggemar' AND status = 'tampil' ORDER BY waktu_kirim DESC");
 
-// Karya penggemar yang sudah disetujui dan punya foto karya
-$hasil_karya = mysqli_query($koneksi, "SELECT * FROM kiriman_sahabat WHERE kategori = 'Karya Penggemar' AND status = 'tampil' AND foto_karya IS NOT NULL ORDER BY waktu_kirim DESC");
+// Karya penggemar yang sudah disetujui dan punya foto
+$hasil_karya = mysqli_query($koneksi, "SELECT * FROM kiriman_sahabat WHERE kategori = 'Karya Penggemar' AND status = 'tampil' AND foto IS NOT NULL ORDER BY waktu_kirim DESC");
 
 // Komunitas regional, urut dari anggota terbanyak
 $hasil_komunitas = mysqli_query($koneksi, "SELECT * FROM komunitas_regional ORDER BY jumlah_anggota DESC");
@@ -59,11 +59,13 @@ include 'bagian/header.php';
     <div class="grid-auto">
       <?php while ($cerita = mysqli_fetch_assoc($hasil_cerita)) { ?>
         <div class="card card-border-merah">
-          <?php $waktu = strtotime($cerita['waktu_kirim']); ?>
           <div class="cerita-head">
+            <?php if ($cerita['foto'] != '') { ?>
+              <div class="avatar-kecil"><img src="<?php echo htmlspecialchars($cerita['foto']); ?>" alt="<?php echo htmlspecialchars($cerita['nama_lengkap']); ?>"></div>
+            <?php } ?>
             <div>
               <h4 class="kota"><?php echo htmlspecialchars($cerita['nama_lengkap']); ?></h4>
-              <p class="lagu-artis"><?php echo date('d', $waktu) . ' ' . $bulan_lengkap[date('n', $waktu)] . ' ' . date('Y', $waktu); ?></p>
+              <p class="lagu-artis"><?php echo htmlspecialchars($cerita['kota'] ?? ''); ?></p>
             </div>
           </div>
           <p class="kutipan">"<?php echo htmlspecialchars($cerita['pesan']); ?>"</p>
@@ -87,7 +89,7 @@ include 'bagian/header.php';
 
       <div class="galeri-foto">
         <?php while ($karya = mysqli_fetch_assoc($hasil_karya)) { ?>
-          <div class="galeri-item"><img src="<?php echo htmlspecialchars($karya['foto_karya']); ?>" alt="Karya <?php echo htmlspecialchars($karya['nama_lengkap']); ?>"></div>
+          <div class="galeri-item"><img src="<?php echo htmlspecialchars($karya['foto']); ?>" alt="Karya <?php echo htmlspecialchars($karya['nama_lengkap']); ?>"></div>
         <?php } ?>
       </div>
 
@@ -159,7 +161,7 @@ include 'bagian/header.php';
         <p class="pesan-form gagal">Semua isian wajib diisi dan email harus benar.</p>
       <?php } ?>
       <?php if ($pesan == 'foto_wajib') { ?>
-        <p class="pesan-form gagal">Kategori Karya Penggemar wajib menyertakan foto karya.</p>
+        <p class="pesan-form gagal">Kategori Karya Penggemar wajib menyertakan foto.</p>
       <?php } ?>
       <?php if ($pesan == 'foto_gagal') { ?>
         <p class="pesan-form gagal">Foto harus JPG, PNG, atau WEBP dengan ukuran maksimal 2 MB.</p>
@@ -177,6 +179,8 @@ include 'bagian/header.php';
             <input id="email" type="email" name="email" placeholder="email@domain.com" required>
           </div>
         </div>
+        <label for="kota">Kota (opsional)</label>
+        <input id="kota" type="text" name="kota" placeholder="Contoh: Bandung" maxlength="100">
         <label for="kategori">Kategori</label>
         <select id="kategori" name="kategori" required>
           <option value="">Pilih Kategori</option>
@@ -186,8 +190,8 @@ include 'bagian/header.php';
         </select>
         <label for="pesan">Pesan / Deskripsi</label>
         <textarea id="pesan" name="pesan" rows="4" placeholder="Ceritakan sedikit tentang karyamu..." required></textarea>
-        <label for="foto_karya">Foto Karya (wajib untuk Karya Penggemar)</label>
-        <input id="foto_karya" type="file" name="foto_karya" accept="image/jpeg,image/png,image/webp">
+        <label for="foto">Foto (wajib untuk Karya Penggemar, opsional untuk foto profil cerita)</label>
+        <input id="foto" type="file" name="foto" accept="image/jpeg,image/png,image/webp">
         <button type="submit" class="btn btn-merah lebar">Kirim</button>
       </form>
     </div>

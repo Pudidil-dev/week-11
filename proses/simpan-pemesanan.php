@@ -24,11 +24,14 @@ $venue_lokasi       = trim($_POST['venue_lokasi']);
 $rentang_anggaran   = trim($_POST['rentang_anggaran']);
 $catatan            = trim($_POST['catatan']);
 
-// Pilihan tipe acara harus sama dengan ENUM di tabel
+// Pilihan tipe acara harus sama dengan pilihan di tabel
 $daftar_tipe = ['Festival Musik', 'Acara Korporat', 'Konser Privat'];
 
-// 2. Cek isian wajib. Kalau ada yang kosong, kembali dengan pesan gagal.
-if ($nama_organisasi == '' || $telepon == '' || !in_array($tipe_acara, $daftar_tipe) || filter_var($email, FILTER_VALIDATE_EMAIL) == false) {
+// 2. Cek isian wajib. Kalau ada yang salah, kembali dengan pesan gagal.
+//    Estimasi kehadiran boleh kosong, tapi kalau diisi harus angka 1 ke atas.
+$estimasi_salah = $estimasi_kehadiran != '' && (int) $estimasi_kehadiran < 1;
+
+if ($nama_organisasi == '' || $telepon == '' || $estimasi_salah || !in_array($tipe_acara, $daftar_tipe) || filter_var($email, FILTER_VALIDATE_EMAIL) == false) {
     header("Location: ../tur-event.php?pesan=pesanan_gagal#pemesanan-event");
     exit;
 }
@@ -52,7 +55,7 @@ if ($tanggal_acara == '') {
 if ($estimasi_kehadiran == '') {
     $estimasi_sql = "NULL";
 } else {
-    $estimasi_sql = abs((int) $estimasi_kehadiran);   // angka tidak perlu tanda kutip, tidak boleh minus
+    $estimasi_sql = (int) $estimasi_kehadiran;   // angka tidak perlu tanda kutip
 }
 
 // 5. Simpan ke database
