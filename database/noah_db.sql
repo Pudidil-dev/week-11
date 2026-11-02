@@ -163,7 +163,7 @@ INSERT INTO event (jenis, judul, tanggal, kota, venue, deskripsi, label) VALUES
 ('arsip',     'Tur AS (2015)', NULL,                 'Los Angeles, San Francisco, Washington DC, New York', NULL, NULL, 'TUR DUNIA'),
 ('komunitas', 'Sahabat NOAH Nasional', '2024-10-24', 'Jakarta', NULL, 'Pertemuan akbar tahunan seluruh komunitas wilayah di Jakarta. Sesi bermain musik bersama, diskusi, dan kejutan spesial.', 'Gathnas 2024'),
 -- tahun 2024 perkiraan, di HTML hanya tertulis "12 November"
-('komunitas', 'Lokakarya Musik & Kopi', '2024-11-12', 'Bandung', NULL, 'Bedah instrumen lagu-lagu NOAH bersama musisi lokal dan sesi berbagi antar Sahabat.', 'Bandung');
+('komunitas', 'Lokakarya Musik & Kopi', '2024-11-12', 'Bandung', NULL, 'Bedah instrumen lagu-lagu NOAH bersama musisi lokal dan sesi berbagi antar Sahabat.', NULL);
 
 INSERT INTO setlist (judul, venue, tanggal, tamu, lagu_utama, lagu_encore) VALUES
 ('The Great Journey of NOAH - Jakarta (2023)', 'Ancol Beach City International Stadium', '2023-12-03', 'Reza (Drummer Asli)',

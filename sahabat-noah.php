@@ -159,8 +159,13 @@ include 'bagian/header.php';
               <span><?php echo $teks_bulan; ?></span>
             </div>
             <div class="event-isi">
-              <span class="label-merah"><?php echo htmlspecialchars($event['label'] ?? ''); ?></span>
+              <?php if ($event['label'] != '') { ?>
+                <span class="label-merah"><?php echo htmlspecialchars($event['label']); ?></span>
+              <?php } ?>
               <h3 class="berita-judul"><?php echo htmlspecialchars($event['judul']); ?></h3>
+              <?php if ($event['kota'] != '') { ?>
+                <p class="lagu-artis"><?php echo htmlspecialchars($event['kota']); ?></p>
+              <?php } ?>
               <p class="paragraf-kecil mb"><?php echo htmlspecialchars($event['deskripsi'] ?? ''); ?></p>
               <a class="btn btn-merah" href="#form-cerita">Daftar</a>
             </div>

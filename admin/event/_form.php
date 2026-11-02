@@ -31,6 +31,7 @@
 
   <label for="venue">Venue</label>
   <input id="venue" type="text" name="venue" maxlength="150" value="<?= e($data['venue'] ?? '') ?>">
+  <p class="bantuan">Hanya tampil untuk Konser Mendatang. Kosongkan untuk Arsip dan Event Komunitas.</p>
 
   <label for="deskripsi">Deskripsi</label>
   <textarea id="deskripsi" name="deskripsi" rows="3"><?= e($data['deskripsi'] ?? '') ?></textarea>

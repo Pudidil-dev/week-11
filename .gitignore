@@ -4,8 +4,9 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Semua dokumen markdown (catatan tugas, laporan, panduan)
+# Semua dokumen markdown (catatan tugas, laporan, panduan), kecuali README
 *.md
+!README.md
 
 # Mockup desain dari Google Stitch dan catatan rencana
 stitch_*/
