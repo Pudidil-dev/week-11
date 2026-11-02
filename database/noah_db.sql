@@ -242,6 +242,6 @@ INSERT INTO komunitas_regional (kota, jumlah_anggota, ketua) VALUES
 ('Medan',      2900, 'Iwan Ginting'),
 ('Makassar',   2140, 'Zulkifli');
 
--- akun latihan: username admin, password noah-30a23f (segera ganti)
+-- akun latihan: username admin, password admin (ganti sebelum website dipasang online)
 INSERT INTO admin (username, password) VALUES
-('admin', '$2y$10$AUK9C0E7t9jkt1Rda/2OJ.11XkNSsl2oNz/vFnu/jhyCC5p/9uwCW');
+('admin', '$2y$10$jTHkgqkFvjlUziCFIwexuuL2Jg3.hYUGg.z2b1eOAbBmhf.Kq4.oq');
